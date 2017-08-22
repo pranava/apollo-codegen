@@ -73,12 +73,11 @@ function enumerationDeclaration(generator: CodeGenerator, type: GraphQLEnumType)
         generator.printOnNewline(`// ${line.trim()}`);
       })
   }
-  generator.printOnNewline(`export type ${name} =`);
-  const nValues = values.length;
-  values.forEach((value, i) =>
-    generator.printOnNewline(`  "${value.value}"${i === nValues - 1 ? ';' : ' |'}${wrap(' // ', value.description)}`)
+  generator.printOnNewline(`export enum ${name} {`);
+  values.forEach((value) =>
+    generator.printOnNewline(`  ${value.value} = "${value.value},"${wrap(' // ', value.description)}`)
   );
-  generator.printNewline();
+  generator.printOnNewline(`};`);
 }
 
 function structDeclarationForInputObjectType(
@@ -97,13 +96,13 @@ function structDeclarationForInputObjectType(
 function interfaceNameFromOperation({ operationName, operationType }: { operationName: string, operationType: string }) {
   switch (operationType) {
     case 'query':
-      return `${operationName}Query`;
+      return `${operationName}QueryResponse`;
       break;
     case 'mutation':
-      return `${operationName}Mutation`;
+      return `${operationName}MutationResponse`;
       break;
     case 'subscription':
-      return `${operationName}Subscription`;
+      return `${operationName}SubscriptionResponse`;
       break;
     default:
       throw new GraphQLError(`Unsupported operation type "${operationType}"`);
